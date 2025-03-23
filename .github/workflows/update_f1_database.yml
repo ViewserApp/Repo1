@@ -2,11 +2,8 @@ name: Update F1 Database
 
 on:
   schedule:
-    # Ejecutar todos los viernes, sábados, domingos y lunes a las 00:00 UTC
-    - cron: '0 0 * * 5'  # Viernes
-    - cron: '0 0 * * 6'  # Sábado
-    - cron: '0 0 * * 0'  # Domingo
-    - cron: '0 0 * * 1'  # Lunes
+    # Ejecutar solo los domingos a las 24:00 UTC (lunes 00:00 UTC)
+    - cron: '0 0 * * 1'  # Lunes a las 00:00 UTC
   workflow_dispatch:  # Permitir ejecución manual desde la interfaz de GitHub
 
 jobs:
@@ -35,21 +32,19 @@ jobs:
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" > .env
           echo "SUPABASE_SERVICE_KEY=${{ secrets.SUPABASE_SERVICE_KEY }}" >> .env
 
-      # Ejecutar el script con reintentos para manejar el error 429
-      - name: Run script with retries
+      # Ejecutar el script con reintentos infinitos para manejar el error 429
+      - name: Run script with infinite retries
         run: |
-          for attempt in {1..5}; do
-            echo "Intento $attempt de 5"
+          attempt=1
+          while true; do
+            echo "Intento $attempt"
             python main.py && break  # Si tiene éxito, salir del bucle
             if [ $? -eq 429 ]; then
               echo "Error 429 detectado. Esperando antes de reintentar..."
-              sleep $((attempt * 60))  # Espera incremental: 60s, 120s, 180s, 240s, 300s
+              sleep $((attempt * 60))  # Espera incremental: 60s, 120s, 180s, etc.
+              attempt=$((attempt + 1))
             else
               echo "Error diferente al 429. Terminando."
-              exit 1
-            fi
-            if [ $attempt -eq 5 ]; then
-              echo "Fallo tras 5 intentos. Terminando."
               exit 1
             fi
           done
