@@ -48,8 +48,8 @@ def fetch_races():
         qual_time = race.get("Qualifying", {}).get("time", "00:00:00Z")
         qual = f"{qual_date}T{qual_time}" if qual_date else None
         
-        sprint_qual_date = race.get("Sprint", {}).get("date")
-        sprint_qual_time = race.get("Sprint", {}).get("time", "00:00:00Z")
+        sprint_qual_date = race.get("SprintQualifying", {}).get("date")
+        sprint_qual_time = race.get("SprintQualifying", {}).get("time", "00:00:00Z")
         sprint_qual = f"{sprint_qual_date}T{sprint_qual_time}" if sprint_qual_date else None
         
         sprint_race_date = race.get("Sprint", {}).get("date")
