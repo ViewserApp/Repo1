@@ -2,8 +2,10 @@ name: Update F1 Database
 
 on:
   schedule:
-    # Ejecutar solo los domingos a las 24:00 UTC (lunes 00:00 UTC)
+    # Ejecutar los domingos a las 24:00 UTC (lunes 00:00 UTC)
     - cron: '0 0 * * 1'  # Lunes a las 00:00 UTC
+    # Ejecutar los lunes a las 24:00 UTC (martes 00:00 UTC)
+    - cron: '0 0 * * 2'  # Martes a las 00:00 UTC
   workflow_dispatch:  # Permitir ejecución manual desde la interfaz de GitHub
 
 jobs:
